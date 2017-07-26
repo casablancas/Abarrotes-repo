@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -36,6 +38,7 @@ public class AgregarProducto extends javax.swing.JFrame {
         btnAgregarProducto.setEnabled(false);
         jButton1.setVisible(false);
         toolTips();
+        setComboBoxProv1();
     }
     
     //Creamos la instancia 'con' de tipo ConexionBD
@@ -163,6 +166,37 @@ public class AgregarProducto extends javax.swing.JFrame {
             btnAgregarProducto.setEnabled(false);
         else
             btnAgregarProducto.setEnabled(true);
+    }
+    
+    public void setComboBoxProv1()
+    {
+        jComboBoxProveedor1.removeAllItems();
+        jComboBoxProveedor2.removeAllItems();
+
+            String sql = "SELECT distinct nombre FROM proveedor";
+
+            Statement st;
+            try{
+                st = cn.createStatement();
+                ResultSet rs = st.executeQuery(sql);
+
+                jComboBoxProveedor1.addItem("Elija proveedor 1");
+                jComboBoxProveedor2.addItem("Elija proveedor 2");
+                //Validamos que el resultset contenga datos o esté vacío.
+                while (rs != null && rs.next()) 
+                { 
+                    //codigo para tratar al conjunto de registros o al registro obtenido 
+                    System.out.println("Se ha encontrado algo en la base de datos.");
+                    //Regresa el puntero al inicio para no perder el primer dato de la tabla.
+                    //rs.beforeFirst();
+                    jComboBoxProveedor1.addItem((String) rs.getObject(1));
+                    jComboBoxProveedor2.addItem((String) rs.getObject(1));
+                }
+
+            } catch (SQLException ex) {
+                //Logger.getLogger(HacerPedido.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, ex);
+            }
     }
 
     /**
@@ -606,6 +640,14 @@ public class AgregarProducto extends javax.swing.JFrame {
             System.out.println("Se eligió el de seleccione proveedor");
         
         System.out.println("Proveedor 1: "+proveedor1 +"\nProveedor 2: "+proveedor2);
+        
+        //-------------------------------------
+       
+        Map parametro = new HashMap();
+        parametro.put("proveedor1", jComboBoxProveedor1.getSelectedItem());
+        
+        System.out.println("Parámetro: "+ jComboBoxProveedor1.getSelectedItem());
+        System.out.println("Contenido: "+parametro);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
