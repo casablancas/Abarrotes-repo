@@ -94,6 +94,7 @@ public class HacerPedido extends javax.swing.JFrame {
         tablaProductosRegistrados.setEditingRow(ERROR);
         toolTips();
         btnImprimePedido.setVisible(false);
+        btnMostrarPedidoPorProveedor.setEnabled(false);
 //        btnPedido.setEnabled(false);
 //        llenadoComboBox();
 //        jButton1.setVisible(false);
@@ -247,6 +248,146 @@ public class HacerPedido extends javax.swing.JFrame {
                 tablaProductosRegistrados.getColumn("Familia").setMaxWidth(1);
                 tablaProductosRegistrados.getColumn("Prov. 1").setMaxWidth(1);
                 tablaProductosRegistrados.getColumn("Prov. 2").setMaxWidth(1);
+                cc.desconectar();
+            
+        } catch (SQLException ex) {
+            //Logger.getLogger(HacerPedido.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, ex);
+//            JOptionPane.showMessageDialog(null, "Se ha agotado el tiempo de espera para conectarse a la base de datos.",
+//            "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    
+    //Realiza consulta de los productos con el parámetro del proveedor 1.
+    public void mostrarProductosProveedor(String valor)
+    {
+        tablaProductosRegistrados.clearSelection();
+        tablaPedidos.clearSelection();
+        
+        //btnPedido.setEnabled(false);
+        
+        DefaultTableModel model;
+        
+        //Encabezados de la tabla.
+        String [] titulos = {"Nombre", "Familia", "Proveedor"};
+        String [] productos = new String[3];
+        
+        //Creamos nuestra sentencia SQL.
+        String sql = "SELECT nombre, familia, proveedor1 FROM producto WHERE proveedor1 LIKE '%"+valor+"%' ORDER BY familia";
+
+        //Cambio de Query, el usuario quiere que solamente aparezca el nombre del producto.
+//        String sql = "SELECT nombre FROM producto WHERE nombre LIKE '%"+valor+"%' ORDER BY nombre";
+        
+        //Creamos el objeto para la tabla que muestra los datos de la base de datos.
+        model = new DefaultTableModel(null, titulos);
+        
+        Statement st;
+        try{
+            st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            
+            //Validamos que el resultset contenga datos o esté vacío.
+            if (rs != null && rs.next() ) 
+            { 
+                //codigo para tratar al conjunto de registros o al registro obtenido 
+                System.out.println("Se ha encontrado algo en la base de datos.");
+                //Regresa el puntero al inicio para no perder el primer dato de la tabla.
+                rs.beforeFirst();
+            } 
+            else 
+            {
+                //si entra a este else quiere decir que no obtuviste ningun registro 
+                //o sea que el ResultSet fue nulo.
+                System.err.println("No se ha encontrado nada en la base de datos");
+//                JOptionPane.showMessageDialog(null, "No hay ningún producto con ese nombre en la base de datos.",
+//                "No se encontró el elemento", JOptionPane.INFORMATION_MESSAGE);
+                txtBusqueda.grabFocus();
+                cc.desconectar();
+            }
+            
+            while(rs.next())
+                {
+                    productos[0] = rs.getString("nombre");
+                    productos[1] = rs.getString("familia");
+                    productos[2] = rs.getString("proveedor1");
+                    //productos[3] = rs.getString("proveedor2");
+                    model.addRow(productos);
+                }
+                tablaPedidos.setModel(model);
+                //tablaProductosRegistrados.getColumn("Nombre").setMinWidth(250);
+                //tablaProductosRegistrados.getColumn("Familia").setMaxWidth(1);
+                //tablaProductosRegistrados.getColumn("Prov. 1").setMaxWidth(1);
+                //tablaProductosRegistrados.getColumn("Prov. 2").setMaxWidth(1);
+                cc.desconectar();
+            
+        } catch (SQLException ex) {
+            //Logger.getLogger(HacerPedido.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, ex);
+//            JOptionPane.showMessageDialog(null, "Se ha agotado el tiempo de espera para conectarse a la base de datos.",
+//            "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    
+    //Realiza consulta de los productos con el parámetro del proveedor 2.
+    public void mostrarProductosProveedor2(String valor)
+    {
+        tablaProductosRegistrados.clearSelection();
+        tablaPedidos.clearSelection();
+        
+        //btnPedido.setEnabled(false);
+        
+        DefaultTableModel model;
+        
+        //Encabezados de la tabla.
+        String [] titulos = {"Nombre", "Familia", "Proveedor"};
+        String [] productos = new String[3];
+        
+        //Creamos nuestra sentencia SQL.
+        String sql = "SELECT nombre, familia, proveedor2 FROM producto WHERE proveedor2 LIKE '%"+valor+"%' ORDER BY familia";
+
+        //Cambio de Query, el usuario quiere que solamente aparezca el nombre del producto.
+//        String sql = "SELECT nombre FROM producto WHERE nombre LIKE '%"+valor+"%' ORDER BY nombre";
+        
+        //Creamos el objeto para la tabla que muestra los datos de la base de datos.
+        model = new DefaultTableModel(null, titulos);
+        
+        Statement st;
+        try{
+            st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            
+            //Validamos que el resultset contenga datos o esté vacío.
+            if (rs != null && rs.next() ) 
+            { 
+                //codigo para tratar al conjunto de registros o al registro obtenido 
+                System.out.println("Se ha encontrado algo en la base de datos.");
+                //Regresa el puntero al inicio para no perder el primer dato de la tabla.
+                rs.beforeFirst();
+            } 
+            else 
+            {
+                //si entra a este else quiere decir que no obtuviste ningun registro 
+                //o sea que el ResultSet fue nulo.
+                System.err.println("No se ha encontrado nada en la base de datos");
+//                JOptionPane.showMessageDialog(null, "No hay ningún producto con ese nombre en la base de datos.",
+//                "No se encontró el elemento", JOptionPane.INFORMATION_MESSAGE);
+                txtBusqueda.grabFocus();
+                cc.desconectar();
+            }
+            
+            while(rs.next())
+                {
+                    productos[0] = rs.getString("nombre");
+                    productos[1] = rs.getString("familia");
+                    productos[2] = rs.getString("proveedor2");
+                    //productos[3] = rs.getString("proveedor2");
+                    model.addRow(productos);
+                }
+                tablaPedidos.setModel(model);
+                //tablaProductosRegistrados.getColumn("Nombre").setMinWidth(250);
+                //tablaProductosRegistrados.getColumn("Familia").setMaxWidth(1);
+                //tablaProductosRegistrados.getColumn("Prov. 1").setMaxWidth(1);
+                //tablaProductosRegistrados.getColumn("Prov. 2").setMaxWidth(1);
                 cc.desconectar();
             
         } catch (SQLException ex) {
@@ -674,7 +815,7 @@ public class HacerPedido extends javax.swing.JFrame {
         System.out.println("Contenido: "+parametro);
         
         //Obtenemos el path relativo del archivo .jasper de las carpetas del JAR
-        File resPath = new File(getClass().getResource("/reports/reportParameter.jasper").getFile());
+        /*File resPath = new File(getClass().getResource("/reports/reportParameter.jasper").getFile());
         
         JasperReport jr = null;
         try {
@@ -691,7 +832,7 @@ public class HacerPedido extends javax.swing.JFrame {
             cc.desconectar();
         } catch (JRException ex) {
             Logger.getLogger(HacerPedido.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
     
     
@@ -845,7 +986,7 @@ public class HacerPedido extends javax.swing.JFrame {
         btnImprimePedido = new javax.swing.JButton();
         btnPedidoRemove = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnMostrarPedidoPorProveedor = new javax.swing.JButton();
         jComboBoxProveedor = new javax.swing.JComboBox<>();
         optProv1 = new javax.swing.JRadioButton();
         optProv2 = new javax.swing.JRadioButton();
@@ -853,6 +994,7 @@ public class HacerPedido extends javax.swing.JFrame {
         btnGeneraPDF = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         btnNuevoPedido = new javax.swing.JButton();
+        btnMostrarPedidos = new javax.swing.JButton();
 
         Eliminar.setText("Eliminar producto");
         Eliminar.addActionListener(new java.awt.event.ActionListener() {
@@ -865,14 +1007,14 @@ public class HacerPedido extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setIconImage(new ImageIcon(getClass().getResource("/views/store.png")).getImage());
         addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 formMousePressed(evt);
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 formMouseReleased(evt);
-            }
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                formMouseClicked(evt);
             }
         });
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -901,7 +1043,7 @@ public class HacerPedido extends javax.swing.JFrame {
         Panel_busquedaLayout.setVerticalGroup(
             Panel_busquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel_busquedaLayout.createSequentialGroup()
-                .addContainerGap(8, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel8)
                 .addContainerGap())
         );
@@ -962,7 +1104,7 @@ public class HacerPedido extends javax.swing.JFrame {
         Panel_listadoLayout.setVerticalGroup(
             Panel_listadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel_listadoLayout.createSequentialGroup()
-                .addContainerGap(8, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addContainerGap())
         );
@@ -1097,11 +1239,11 @@ public class HacerPedido extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(191, 54, 12), 2, true), "Pedido por proveedor", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 14), new java.awt.Color(191, 54, 12))); // NOI18N
 
-        jButton1.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
-        jButton1.setText("Hacer pedido");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnMostrarPedidoPorProveedor.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
+        btnMostrarPedidoPorProveedor.setText("Mostrar pedido por proveedor");
+        btnMostrarPedidoPorProveedor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnMostrarPedidoPorProveedorActionPerformed(evt);
             }
         });
 
@@ -1136,14 +1278,14 @@ public class HacerPedido extends javax.swing.JFrame {
                     .addComponent(optProv2))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                    .addComponent(btnMostrarPedidoPorProveedor, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
                     .addComponent(jComboBoxProveedor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(btnMostrarPedidoPorProveedor)
                     .addComponent(optProv1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1210,7 +1352,7 @@ public class HacerPedido extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnNuevoPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                .addComponent(btnNuevoPedido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -1220,6 +1362,13 @@ public class HacerPedido extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
+        btnMostrarPedidos.setText("Mostrar pedidos generales");
+        btnMostrarPedidos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMostrarPedidosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout Panel_generalLayout = new javax.swing.GroupLayout(Panel_general);
         Panel_general.setLayout(Panel_generalLayout);
         Panel_generalLayout.setHorizontalGroup(
@@ -1227,28 +1376,31 @@ public class HacerPedido extends javax.swing.JFrame {
             .addComponent(Panel_busqueda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(Panel_listado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(Panel_generalLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(Busqueda_producto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(Panel_generalLayout.createSequentialGroup()
-                .addGroup(Panel_generalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(Panel_generalLayout.createSequentialGroup()
-                        .addComponent(btnHome)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnImprimePedido))
-                    .addComponent(Panel_productos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(Panel_productos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(Panel_generalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnPedidoRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Panel_pedido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(Panel_generalLayout.createSequentialGroup()
+                .addGroup(Panel_generalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(Panel_generalLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(Busqueda_producto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(Panel_generalLayout.createSequentialGroup()
+                        .addComponent(btnHome)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnImprimePedido)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnMostrarPedidos)))
+                .addContainerGap())
         );
         Panel_generalLayout.setVerticalGroup(
             Panel_generalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1276,7 +1428,10 @@ public class HacerPedido extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(Panel_generalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnHome, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnImprimePedido, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addComponent(btnImprimePedido, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel_generalLayout.createSequentialGroup()
+                        .addComponent(btnMostrarPedidos)
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1378,20 +1533,36 @@ public class HacerPedido extends javax.swing.JFrame {
 //          btnPedido.setEnabled(false);
     }//GEN-LAST:event_tablaProductosRegistradosMousePressed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnMostrarPedidoPorProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarPedidoPorProveedorActionPerformed
         // TODO add your handling code here:
+        
+        if(optProv1.isSelected()){
+        
+            mostrarProductosProveedor(jComboBoxProveedor.getSelectedItem().toString());
+        }else if (optProv2.isSelected()){
+        
+            mostrarProductosProveedor2(jComboBoxProveedor.getSelectedItem().toString());
+        }
+        
         generateJasperReportParameter();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnMostrarPedidoPorProveedorActionPerformed
 
     private void optProv1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_optProv1MouseClicked
         // TODO add your handling code here:
         llenadoComboBox();
+        btnMostrarPedidoPorProveedor.setEnabled(true);
     }//GEN-LAST:event_optProv1MouseClicked
 
     private void optProv2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_optProv2MouseClicked
         // TODO add your handling code here:
         llenadoComboBox();
+        btnMostrarPedidoPorProveedor.setEnabled(true);
     }//GEN-LAST:event_optProv2MouseClicked
+
+    private void btnMostrarPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarPedidosActionPerformed
+        // TODO add your handling code here:
+        mostrarPedidos();
+    }//GEN-LAST:event_btnMostrarPedidosActionPerformed
 
     
     class TableRowTransferHandler extends TransferHandler {
@@ -1579,11 +1750,12 @@ class TS extends TransferHandler {
     private javax.swing.JButton btnGeneraPDF;
     private javax.swing.JButton btnHome;
     private javax.swing.JButton btnImprimePedido;
+    private javax.swing.JButton btnMostrarPedidoPorProveedor;
+    private javax.swing.JButton btnMostrarPedidos;
     private javax.swing.JButton btnNuevoPedido;
     private javax.swing.JButton btnPedido;
     private javax.swing.JButton btnPedidoRemove;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBoxProveedor;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
